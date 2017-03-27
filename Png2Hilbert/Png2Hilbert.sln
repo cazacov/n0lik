@@ -3,7 +3,25 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Png2Hilbert.Gui", "Png2Hilbert.Gui\Png2Hilbert.Gui.csproj", "{852135DB-B99C-4820-B52A-F2AB64ED2414}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Png2Hilbert", "Png2Hilbert\Png2Hilbert.csproj", "{5C5D1F00-1F1F-4950-8D6C-CC8349B7FCB1}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{852135DB-B99C-4820-B52A-F2AB64ED2414}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{852135DB-B99C-4820-B52A-F2AB64ED2414}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{852135DB-B99C-4820-B52A-F2AB64ED2414}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{852135DB-B99C-4820-B52A-F2AB64ED2414}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C5D1F00-1F1F-4950-8D6C-CC8349B7FCB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C5D1F00-1F1F-4950-8D6C-CC8349B7FCB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C5D1F00-1F1F-4950-8D6C-CC8349B7FCB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C5D1F00-1F1F-4950-8D6C-CC8349B7FCB1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
