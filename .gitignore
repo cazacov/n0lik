@@ -31,3 +31,6 @@
 
 # Blender files
 *.blend?
+
+#IDEA/PyCharm
+.idea
