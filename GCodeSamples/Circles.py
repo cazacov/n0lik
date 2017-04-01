@@ -6,7 +6,6 @@ radius = 45
 n = 24
 
 startScript = """
-; Hyperbola curve
 G21         ;All units in mm
 M3 S100     ;Pen UP
 G0 F5000
