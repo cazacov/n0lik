@@ -60,7 +60,7 @@
             this.txtInput.Name = "txtInput";
             this.txtInput.Size = new System.Drawing.Size(327, 20);
             this.txtInput.TabIndex = 0;
-            this.txtInput.Text = "C:\\Temporary\\anna-bw.png";
+            this.txtInput.Text = "C:\\Temporary\\anna-bw2.png";
             // 
             // lblInput
             // 
@@ -112,6 +112,7 @@
             this.txtOutput.Name = "txtOutput";
             this.txtOutput.Size = new System.Drawing.Size(327, 20);
             this.txtOutput.TabIndex = 4;
+            this.txtOutput.Text = "C:\\Temporary\\anna.g";
             // 
             // txtHeader
             // 
@@ -121,7 +122,8 @@
             this.txtHeader.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtHeader.Size = new System.Drawing.Size(249, 155);
             this.txtHeader.TabIndex = 7;
-            this.txtHeader.Text = "G21\r\n\r\nM3 S100\r\n\r\n";
+            this.txtHeader.Text = "G21\r\n\r\nM3 S100\r\n\r\nG0 X100 Y100 F4000\r\n";
+            this.txtHeader.TextChanged += new System.EventHandler(this.txtHeader_TextChanged);
             // 
             // lblHeader
             // 

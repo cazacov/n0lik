@@ -1,6 +1,13 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Remoting.Messaging;
+using System.Threading;
 
 namespace Png2Hilbert
 {
@@ -11,6 +18,8 @@ namespace Png2Hilbert
 
         private Bitmap bitmap;
         public List<Point> Path { get; private set; }
+
+        private const int minOrder = 7;
 
         public void LoadImage(string fileName)
         {
@@ -25,141 +34,95 @@ namespace Png2Hilbert
 
         public void GenerateCurve()
         {
-            const int order = 9;
+            this.Curve = new HilbertCurve(Direction.Up, 8, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+
             this.Path = new List<Point>();
-            HilbertUp(order, new Point(0,0), Path);
+            TracePath(this.Curve, this.Path);
+            GeneratePreview(this.bitmap, Path);
+            OnPathGenerated?.Invoke(this, bitmap);
         }
 
-        
-
-        private void HilbertUp(int order, Point point, List<Point> path)
+        private void TracePath(HilbertCurve curve, List<Point> points)
         {
-            var lineLength = (1 << order) - 1;
-            if (order == 2 ||  BlockIsWhite(point, lineLength, lineLength))
+            if (!curve.Children.Any())
             {
-                point.Offset(lineLength * 3, 0);
-                path.Add(point);
-                return;
-            }
-            else
-            {
-                HilbertRight(order - 1, point, path);
-                point.Offset(0, lineLength);
-                path.Add(point);
-
-                HilbertUp(order - 1, point, path);
-                point.Offset(lineLength, 0);
-                path.Add(point);
-
-                HilbertUp(order - 1, point, path);
-                point.Offset(0, -lineLength);
-                path.Add(point);
-
-                HilbertLeft(order - 1, point, path);
-            }
-        }
-
-        private void HilbertLeft(int order, Point point, List<Point> path)
-        {
-            var lineLength = (1 << order) - 1;
-            if (order == 2 || BlockIsWhite(point, -lineLength, -lineLength))
-            {
-                point.Offset(0, -lineLength * 3);
-                path.Add(point);
-                return;
-            }
-            else
-            {
-                HilbertDown(order - 1, point, path);
-                point.Offset(-lineLength, 0);
-                path.Add(point);
-
-                HilbertLeft(order - 1, point, path);
-                point.Offset(0, -lineLength);
-                path.Add(point);
-
-                HilbertLeft(order - 1, point, path);
-                point.Offset(lineLength, 0);
-                path.Add(point);
-
-                HilbertUp(order - 1, point, path);
-            }
-        }
-
-        private void HilbertDown(int order, Point point, List<Point> path)
-        {
-            var lineLength = (1 << order) - 1;
-            if (order == 2 || BlockIsWhite(point, -lineLength, -lineLength))
-            {
-                point.Offset(-lineLength * 3, 0);
-                path.Add(point);
+                points.Add(curve.EnterPoint);
                 return;
             }
 
-            HilbertLeft(order - 1, point, path);
-            point.Offset(0, -lineLength);
-            path.Add(point);
+            curve.Children.ForEach(c =>
+                {
+                    if (BlockIsWhite(c.Square, c.Order))
+                    {
+                        points.Add(c.EnterPoint);
+                        if (c.ExitPoint != c.EnterPoint)
+                        {
+                            points.Add(c.ExitPoint);
+                        }
+                    }
+                    else
+                    {
+                        TracePath(c, points);            
+                    }
+                }
+            );
 
-            HilbertDown(order - 1, point, path);
-            point.Offset(-lineLength, 0);
-            path.Add(point);
-
-            HilbertDown(order - 1, point, path);
-            point.Offset(0, lineLength);
-            path.Add(point);
-
-            HilbertRight(order - 1, point, path);
+            //var nonWhiteChildren = curve.Children.Where(c => !BlockIsWhite(c.Square, c.Order)).ToList();
+            //nonWhiteChildren.ForEach(c => TracePath(c, points));
         }
 
-        private void HilbertRight(int order, Point point, List<Point> path)
+        public HilbertCurve Curve { get; set; }
+
+        bool BlockIsWhite(Rectangle rect, int order)
         {
-            var lineLength = (1 << order) - 1;
-            if (order == 2 || BlockIsWhite(point, lineLength, lineLength))
+            long intensity = 0;
+            for (var y = rect.Top; y < rect.Bottom; y++)
             {
-                point.Offset(0, lineLength * 3);
-                path.Add(point);
-                return;
+                for (var x = rect.Left; x < rect.Right; x++)
+                {
+                    intensity += bitmap.GetPixel(x, y).G; // use green component
+                }
             }
+            intensity /= rect.Width * rect.Height;
 
-            HilbertUp(order - 1, point, path);
-            point.Offset(lineLength, 0);
-            path.Add(point);
+            var threshold = 1.0 / (1 << order);
 
-            HilbertRight(order - 1, point, path);
-            point.Offset(0, lineLength);
-            path.Add(point);
-
-            HilbertRight(order - 1, point, path);
-            point.Offset(-lineLength, 0);
-            path.Add(point);
-
-            HilbertDown(order - 1, point, path);
+            var result = (1 - intensity / 255.0) < threshold;
+            return result;
         }
 
-
-
-        bool BlockIsWhite(Point from, int dx, int dy)
+        private void GeneratePreview(Bitmap bmp, List<Point> path)
         {
-            return true;
+            using (var graphics = Graphics.FromImage(bmp))
+            {
+                graphics.FillRectangle(Brushes.White, 0,0, bmp.Width, bmp.Height);
 
-            //const double threshold = 1.2;
+                var pen = Pens.Black;
+                graphics.DrawLines(pen, path.ToArray());
+            }
+        }
 
-            //int l = Math.Min(from.X, to.X);
-            //int r = Math.Max(from.X, to.X);
-            //int t = Math.Min(from.Y, to.Y);
-            //int b = Math.Max(from.Y, to.Y);
+        public void ExportGCode(string outputFileName, string header, string footer, int maxSize)
+        {
+            var scale = (double)maxSize / this.bitmap.Width;
 
-            //long intensity = 0;
-            //for (var i = l; i < r; ++i)
-            //{
-            //    for (var j = t; j < b; ++j)
-            //    {
-            //        intensity += bitmap.GetPixel(i, j).G; // use green component
-            //    }
-            //}
-            //intensity /= (b - t) * (r - l);
+            var locale = CultureInfo.InvariantCulture;
+            Thread.CurrentThread.CurrentCulture = locale;
 
-            //return intensity / (b - t) * (r - l) * 255.0 > threshold * (1 - Math.Log(2) / Math.Log(b - t));
+            using (var textWriter = File.CreateText(outputFileName))
+            {
+                textWriter.WriteLine(header);
+
+                textWriter.WriteLine("G0 X{0} Y{1}", this.Path[0].X*scale, maxSize - this.Path[0].Y*scale);
+                textWriter.WriteLine("M3 S0");
+
+                foreach (var point in this.Path)
+                {
+                    textWriter.WriteLine("G1 X{0:0.00} Y{1:0.00}", point.X*scale, maxSize - point.Y*scale);
+                }
+
+                textWriter.WriteLine(footer);
+            }
         }
     }
 }
