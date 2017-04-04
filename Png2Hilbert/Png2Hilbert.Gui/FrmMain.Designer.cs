@@ -38,16 +38,24 @@
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.txtHeader = new System.Windows.Forms.TextBox();
             this.lblHeader = new System.Windows.Forms.Label();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.grpSize = new System.Windows.Forms.GroupBox();
-            this.txtSize = new System.Windows.Forms.TextBox();
-            this.lblSize = new System.Windows.Forms.Label();
+            this.txtHeight = new System.Windows.Forms.TextBox();
+            this.lblSizeHeight = new System.Windows.Forms.Label();
+            this.txtWidth = new System.Windows.Forms.TextBox();
+            this.lblSizeWidth = new System.Windows.Forms.Label();
             this.btnStart = new System.Windows.Forms.Button();
             this.lblFooter = new System.Windows.Forms.Label();
             this.txtFooter = new System.Windows.Forms.TextBox();
-            this.txtLog = new System.Windows.Forms.TextBox();
+            this.lblPenUp = new System.Windows.Forms.Label();
+            this.txtPenUp = new System.Windows.Forms.TextBox();
+            this.lblPenDown = new System.Windows.Forms.Label();
+            this.txtPenDown = new System.Windows.Forms.TextBox();
+            this.tbGamma = new System.Windows.Forms.TrackBar();
+            this.lblGamma = new System.Windows.Forms.Label();
+            this.btnLoad = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.picPreview)).BeginInit();
             this.grpSize.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbGamma)).BeginInit();
             this.SuspendLayout();
             // 
             // openFileDialog1
@@ -60,7 +68,7 @@
             this.txtInput.Name = "txtInput";
             this.txtInput.Size = new System.Drawing.Size(327, 20);
             this.txtInput.TabIndex = 0;
-            this.txtInput.Text = "C:\\Temporary\\anna-bw2.png";
+            this.txtInput.Text = "C:\\Temporary\\kate_bw.png";
             // 
             // lblInput
             // 
@@ -120,10 +128,9 @@
             this.txtHeader.Multiline = true;
             this.txtHeader.Name = "txtHeader";
             this.txtHeader.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtHeader.Size = new System.Drawing.Size(249, 155);
+            this.txtHeader.Size = new System.Drawing.Size(249, 112);
             this.txtHeader.TabIndex = 7;
             this.txtHeader.Text = "G21\r\n\r\nM3 S100\r\n\r\nG0 X100 Y100 F4000\r\n";
-            this.txtHeader.TextChanged += new System.EventHandler(this.txtHeader_TextChanged);
             // 
             // lblHeader
             // 
@@ -134,55 +141,67 @@
             this.lblHeader.TabIndex = 8;
             this.lblHeader.Text = "G-code header";
             // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(16, 63);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(774, 25);
-            this.progressBar1.TabIndex = 9;
-            // 
             // grpSize
             // 
-            this.grpSize.Controls.Add(this.txtSize);
-            this.grpSize.Controls.Add(this.lblSize);
-            this.grpSize.Location = new System.Drawing.Point(543, 104);
+            this.grpSize.Controls.Add(this.txtHeight);
+            this.grpSize.Controls.Add(this.lblSizeHeight);
+            this.grpSize.Controls.Add(this.txtWidth);
+            this.grpSize.Controls.Add(this.lblSizeWidth);
+            this.grpSize.Location = new System.Drawing.Point(541, 104);
             this.grpSize.Name = "grpSize";
-            this.grpSize.Size = new System.Drawing.Size(247, 65);
+            this.grpSize.Size = new System.Drawing.Size(247, 76);
             this.grpSize.TabIndex = 10;
             this.grpSize.TabStop = false;
             this.grpSize.Text = "Plot size (mm)";
             // 
-            // txtSize
+            // txtHeight
             // 
-            this.txtSize.Location = new System.Drawing.Point(101, 26);
-            this.txtSize.Name = "txtSize";
-            this.txtSize.Size = new System.Drawing.Size(82, 20);
-            this.txtSize.TabIndex = 10;
-            this.txtSize.Text = "200";
+            this.txtHeight.Location = new System.Drawing.Point(103, 45);
+            this.txtHeight.Name = "txtHeight";
+            this.txtHeight.Size = new System.Drawing.Size(82, 20);
+            this.txtHeight.TabIndex = 12;
+            this.txtHeight.Text = "200";
             // 
-            // lblSize
+            // lblSizeHeight
             // 
-            this.lblSize.AutoSize = true;
-            this.lblSize.Location = new System.Drawing.Point(19, 29);
-            this.lblSize.Name = "lblSize";
-            this.lblSize.Size = new System.Drawing.Size(88, 13);
-            this.lblSize.TabIndex = 9;
-            this.lblSize.Text = "Width = height = ";
+            this.lblSizeHeight.AutoSize = true;
+            this.lblSizeHeight.Location = new System.Drawing.Point(21, 48);
+            this.lblSizeHeight.Name = "lblSizeHeight";
+            this.lblSizeHeight.Size = new System.Drawing.Size(38, 13);
+            this.lblSizeHeight.TabIndex = 11;
+            this.lblSizeHeight.Text = "Height";
+            // 
+            // txtWidth
+            // 
+            this.txtWidth.Location = new System.Drawing.Point(103, 19);
+            this.txtWidth.Name = "txtWidth";
+            this.txtWidth.Size = new System.Drawing.Size(82, 20);
+            this.txtWidth.TabIndex = 10;
+            this.txtWidth.Text = "280";
+            // 
+            // lblSizeWidth
+            // 
+            this.lblSizeWidth.AutoSize = true;
+            this.lblSizeWidth.Location = new System.Drawing.Point(21, 22);
+            this.lblSizeWidth.Name = "lblSizeWidth";
+            this.lblSizeWidth.Size = new System.Drawing.Size(35, 13);
+            this.lblSizeWidth.TabIndex = 9;
+            this.lblSizeWidth.Text = "Width";
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(552, 13);
+            this.btnStart.Location = new System.Drawing.Point(632, 9);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(238, 40);
+            this.btnStart.Size = new System.Drawing.Size(158, 48);
             this.btnStart.TabIndex = 11;
-            this.btnStart.Text = "Start!";
+            this.btnStart.Text = "Export to G-code!";
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // lblFooter
             // 
             this.lblFooter.AutoSize = true;
-            this.lblFooter.Location = new System.Drawing.Point(538, 430);
+            this.lblFooter.Location = new System.Drawing.Point(538, 333);
             this.lblFooter.Name = "lblFooter";
             this.lblFooter.Size = new System.Drawing.Size(72, 13);
             this.lblFooter.TabIndex = 13;
@@ -190,7 +209,7 @@
             // 
             // txtFooter
             // 
-            this.txtFooter.Location = new System.Drawing.Point(541, 446);
+            this.txtFooter.Location = new System.Drawing.Point(541, 349);
             this.txtFooter.Multiline = true;
             this.txtFooter.Name = "txtFooter";
             this.txtFooter.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -198,27 +217,91 @@
             this.txtFooter.TabIndex = 12;
             this.txtFooter.Text = "G21\r\n\r\nM3 S100\r\n\r\n";
             // 
-            // txtLog
+            // lblPenUp
             // 
-            this.txtLog.Location = new System.Drawing.Point(12, 637);
-            this.txtLog.Multiline = true;
-            this.txtLog.Name = "txtLog";
-            this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLog.Size = new System.Drawing.Size(778, 97);
-            this.txtLog.TabIndex = 14;
-            this.txtLog.Text = "\r\n\r\n";
+            this.lblPenUp.AutoSize = true;
+            this.lblPenUp.Location = new System.Drawing.Point(538, 531);
+            this.lblPenUp.Name = "lblPenUp";
+            this.lblPenUp.Size = new System.Drawing.Size(78, 13);
+            this.lblPenUp.TabIndex = 16;
+            this.lblPenUp.Text = "G-code pen up";
+            // 
+            // txtPenUp
+            // 
+            this.txtPenUp.Location = new System.Drawing.Point(541, 547);
+            this.txtPenUp.Name = "txtPenUp";
+            this.txtPenUp.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtPenUp.Size = new System.Drawing.Size(249, 20);
+            this.txtPenUp.TabIndex = 15;
+            this.txtPenUp.Text = "M3 S120";
+            // 
+            // lblPenDown
+            // 
+            this.lblPenDown.AutoSize = true;
+            this.lblPenDown.Location = new System.Drawing.Point(538, 580);
+            this.lblPenDown.Name = "lblPenDown";
+            this.lblPenDown.Size = new System.Drawing.Size(92, 13);
+            this.lblPenDown.TabIndex = 18;
+            this.lblPenDown.Text = "G-code pen down";
+            // 
+            // txtPenDown
+            // 
+            this.txtPenDown.Location = new System.Drawing.Point(541, 596);
+            this.txtPenDown.Name = "txtPenDown";
+            this.txtPenDown.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtPenDown.Size = new System.Drawing.Size(249, 20);
+            this.txtPenDown.TabIndex = 17;
+            this.txtPenDown.Text = "M3 S0";
+            // 
+            // tbGamma
+            // 
+            this.tbGamma.AutoSize = false;
+            this.tbGamma.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tbGamma.Location = new System.Drawing.Point(118, 63);
+            this.tbGamma.Maximum = 25;
+            this.tbGamma.Minimum = 5;
+            this.tbGamma.Name = "tbGamma";
+            this.tbGamma.Size = new System.Drawing.Size(406, 35);
+            this.tbGamma.TabIndex = 19;
+            this.tbGamma.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+            this.tbGamma.UseWaitCursor = true;
+            this.tbGamma.Value = 10;
+            // 
+            // lblGamma
+            // 
+            this.lblGamma.AutoSize = true;
+            this.lblGamma.Location = new System.Drawing.Point(13, 73);
+            this.lblGamma.Name = "lblGamma";
+            this.lblGamma.Size = new System.Drawing.Size(43, 13);
+            this.lblGamma.TabIndex = 20;
+            this.lblGamma.Text = "Gamma";
+            // 
+            // btnLoad
+            // 
+            this.btnLoad.Location = new System.Drawing.Point(540, 9);
+            this.btnLoad.Name = "btnLoad";
+            this.btnLoad.Size = new System.Drawing.Size(82, 48);
+            this.btnLoad.TabIndex = 21;
+            this.btnLoad.Text = "Load";
+            this.btnLoad.UseVisualStyleBackColor = true;
+            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(806, 746);
-            this.Controls.Add(this.txtLog);
+            this.ClientSize = new System.Drawing.Size(806, 630);
+            this.Controls.Add(this.btnLoad);
+            this.Controls.Add(this.lblGamma);
+            this.Controls.Add(this.tbGamma);
+            this.Controls.Add(this.lblPenDown);
+            this.Controls.Add(this.txtPenDown);
+            this.Controls.Add(this.lblPenUp);
+            this.Controls.Add(this.txtPenUp);
             this.Controls.Add(this.lblFooter);
             this.Controls.Add(this.txtFooter);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.grpSize);
-            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.lblHeader);
             this.Controls.Add(this.txtHeader);
             this.Controls.Add(this.btnOutput);
@@ -233,6 +316,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.picPreview)).EndInit();
             this.grpSize.ResumeLayout(false);
             this.grpSize.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbGamma)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -250,14 +334,21 @@
         private System.Windows.Forms.TextBox txtOutput;
         private System.Windows.Forms.TextBox txtHeader;
         private System.Windows.Forms.Label lblHeader;
-        private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.GroupBox grpSize;
-        private System.Windows.Forms.Label lblSize;
-        private System.Windows.Forms.TextBox txtSize;
+        private System.Windows.Forms.Label lblSizeWidth;
+        private System.Windows.Forms.TextBox txtWidth;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Label lblFooter;
         private System.Windows.Forms.TextBox txtFooter;
-        private System.Windows.Forms.TextBox txtLog;
+        private System.Windows.Forms.TextBox txtHeight;
+        private System.Windows.Forms.Label lblSizeHeight;
+        private System.Windows.Forms.Label lblPenUp;
+        private System.Windows.Forms.TextBox txtPenUp;
+        private System.Windows.Forms.Label lblPenDown;
+        private System.Windows.Forms.TextBox txtPenDown;
+        private System.Windows.Forms.TrackBar tbGamma;
+        private System.Windows.Forms.Label lblGamma;
+        private System.Windows.Forms.Button btnLoad;
     }
 }
 

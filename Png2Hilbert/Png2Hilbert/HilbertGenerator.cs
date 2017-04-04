@@ -32,7 +32,7 @@ namespace Png2Hilbert
             bitmap?.Dispose();
         }
 
-        public void GenerateCurve()
+        public void GenerateCurve(double d)
         {
             this.Curve = new HilbertCurve(Direction.Up, 8, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
 
@@ -75,6 +75,8 @@ namespace Png2Hilbert
 
         bool BlockIsWhite(Rectangle rect, int order)
         {
+            const double gamma = 0.85;
+
             long intensity = 0;
             for (var y = rect.Top; y < rect.Bottom; y++)
             {
@@ -87,7 +89,7 @@ namespace Png2Hilbert
 
             var threshold = 1.0 / (1 << order);
 
-            var result = (1 - intensity / 255.0) < threshold;
+            var result =  Math.Pow(1 - intensity / 255.0, 1.0 / gamma) < threshold;
             return result;
         }
 
@@ -102,27 +104,6 @@ namespace Png2Hilbert
             }
         }
 
-        public void ExportGCode(string outputFileName, string header, string footer, int maxSize)
-        {
-            var scale = (double)maxSize / this.bitmap.Width;
-
-            var locale = CultureInfo.InvariantCulture;
-            Thread.CurrentThread.CurrentCulture = locale;
-
-            using (var textWriter = File.CreateText(outputFileName))
-            {
-                textWriter.WriteLine(header);
-
-                textWriter.WriteLine("G0 X{0} Y{1}", this.Path[0].X*scale, maxSize - this.Path[0].Y*scale);
-                textWriter.WriteLine("M3 S0");
-
-                foreach (var point in this.Path)
-                {
-                    textWriter.WriteLine("G1 X{0:0.00} Y{1:0.00}", point.X*scale, maxSize - point.Y*scale);
-                }
-
-                textWriter.WriteLine(footer);
-            }
-        }
+        
     }
 }

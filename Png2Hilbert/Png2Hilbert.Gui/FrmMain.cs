@@ -1,29 +1,41 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 
 namespace Png2Hilbert
 {
     public partial class FrmMain : Form
     {
+        private bool isLoaded;
+        private readonly HilbertGenerator generator;
+
         public FrmMain()
         {
             InitializeComponent();
+            this.isLoaded = false;
+
+            this.generator = new HilbertGenerator();
+            generator.OnLoad += OnImageLoaded;
+            generator.OnPathGenerated += OnPathGenerated;
         }
 
         private void btnStart_Click(object sender, System.EventArgs e)
         {
-            using (var generator = new HilbertGenerator())
+            if (!isLoaded)
             {
-                generator.OnLoad += OnImageLoaded;
-                generator.OnPathGenerated += OnPathGenerated;
-                generator.LoadImage(txtInput.Text);
-                generator.GenerateCurve();
-                var maxSize = Int32.Parse(txtSize.Text);
-
-                generator.ExportGCode(txtOutput.Text, txtHeader.Text, txtFooter.Text, maxSize);
+                DoLoad();
             }
+            generator.GenerateCurve(tbGamma.Value / 10.0);
+            
+            var exporter = new GCodeExporter(
+                Int32.Parse(txtWidth.Text), 
+                Int32.Parse(txtHeight.Text),
+                txtHeader.Text,
+                txtFooter.Text,
+                txtPenUp.Text,
+                txtPenDown.Text);
+
+            exporter.ExportGCode(generator.Path, txtOutput.Text);
         }
 
         private void OnPathGenerated(object sender, Bitmap bitmap)
@@ -48,9 +60,16 @@ namespace Png2Hilbert
             Application.DoEvents();
         }
 
-        private void txtHeader_TextChanged(object sender, EventArgs e)
+        private void btnLoad_Click(object sender, EventArgs e)
         {
+            this.DoLoad();
+            this.isLoaded = true;
+        }
 
+        private void DoLoad()
+        {
+            generator.LoadImage(txtInput.Text);
+            this.isLoaded = true;
         }
     }
 }

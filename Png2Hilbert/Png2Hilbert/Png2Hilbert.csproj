@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Direction.cs" />
+    <Compile Include="GCodeExporter.cs" />
     <Compile Include="HelperExtensions.cs" />
     <Compile Include="HilbertCurve.cs" />
     <Compile Include="HilbertGenerator.cs" />

@@ -34,3 +34,6 @@
 
 #IDEA/PyCharm
 .idea
+
+# G-Code samples
+*.g
