@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Png2Hilbert
+namespace Png2Hilbert.Gui
 {
     public partial class FrmMain : Form
     {
@@ -21,6 +21,7 @@ namespace Png2Hilbert
 
         private void btnStart_Click(object sender, System.EventArgs e)
         {
+            SaveSettings();
             if (!isLoaded)
             {
                 DoLoad();
@@ -68,8 +69,33 @@ namespace Png2Hilbert
 
         private void DoLoad()
         {
+            SaveSettings();
             generator.LoadImage(txtInput.Text);
             this.isLoaded = true;
+        }
+
+        private void FrmMain_Load(object sender, EventArgs e)
+        {
+            this.txtInput.Text = Properties.Settings.Default.InputFileName;
+            this.txtOutput.Text = Properties.Settings.Default.OutputFileName;
+        }
+
+        private void SaveSettings()
+        {
+            Properties.Settings.Default.InputFileName = this.txtInput.Text;
+            Properties.Settings.Default.InputFileName = this.txtOutput.Text;
+
+            Properties.Settings.Default.Save();
+        }
+
+        private void btnInput_Click(object sender, EventArgs e)
+        {
+            if (fileInput.ShowDialog(this) == DialogResult.OK)
+            {
+                this.txtInput.Text = fileInput.FileName;
+                Properties.Settings.Default.InputFileName = this.txtInput.Text;
+                Properties.Settings.Default.Save();
+            }
         }
     }
 }

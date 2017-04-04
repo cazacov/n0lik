@@ -1,6 +1,7 @@
 ﻿using System;
 
 using System.Windows.Forms;
+using Png2Hilbert.Gui;
 
 namespace Png2Hilbert
 {

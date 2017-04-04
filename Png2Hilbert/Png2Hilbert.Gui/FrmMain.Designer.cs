@@ -1,4 +1,4 @@
-﻿namespace Png2Hilbert
+﻿namespace Png2Hilbert.Gui
 {
     partial class FrmMain
     {
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.fileInput = new System.Windows.Forms.OpenFileDialog();
             this.txtInput = new System.Windows.Forms.TextBox();
             this.lblInput = new System.Windows.Forms.Label();
             this.picPreview = new System.Windows.Forms.PictureBox();
@@ -58,9 +58,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.tbGamma)).BeginInit();
             this.SuspendLayout();
             // 
-            // openFileDialog1
+            // fileInput
             // 
-            this.openFileDialog1.FileName = "openFileDialog1";
+            this.fileInput.Filter = "PNG files (*.png)|*.png|JPG files (*.jpg)|*.jpg";
+            this.fileInput.Title = "Input image";
             // 
             // txtInput
             // 
@@ -95,6 +96,7 @@
             this.btnInput.TabIndex = 3;
             this.btnInput.Text = "Browse";
             this.btnInput.UseVisualStyleBackColor = true;
+            this.btnInput.Click += new System.EventHandler(this.btnInput_Click);
             // 
             // btnOutput
             // 
@@ -256,7 +258,7 @@
             // tbGamma
             // 
             this.tbGamma.AutoSize = false;
-            this.tbGamma.Cursor = System.Windows.Forms.Cursors.Default;
+            this.tbGamma.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             this.tbGamma.Location = new System.Drawing.Point(118, 63);
             this.tbGamma.Maximum = 25;
             this.tbGamma.Minimum = 5;
@@ -313,6 +315,7 @@
             this.Controls.Add(this.txtInput);
             this.Name = "FrmMain";
             this.Text = "PNG to Hilbert curve converter";
+            this.Load += new System.EventHandler(this.FrmMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picPreview)).EndInit();
             this.grpSize.ResumeLayout(false);
             this.grpSize.PerformLayout();
@@ -324,7 +327,7 @@
 
         #endregion
 
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.OpenFileDialog fileInput;
         private System.Windows.Forms.TextBox txtInput;
         private System.Windows.Forms.Label lblInput;
         private System.Windows.Forms.PictureBox picPreview;

@@ -22,5 +22,29 @@ namespace Png2Hilbert.Gui.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string InputFileName {
+            get {
+                return ((string)(this["InputFileName"]));
+            }
+            set {
+                this["InputFileName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OutputFileName {
+            get {
+                return ((string)(this["OutputFileName"]));
+            }
+            set {
+                this["OutputFileName"] = value;
+            }
+        }
     }
 }
