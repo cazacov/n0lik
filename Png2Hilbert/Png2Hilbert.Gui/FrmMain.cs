@@ -24,9 +24,11 @@ namespace Png2Hilbert.Gui
             SaveSettings();
             if (!isLoaded)
             {
-                DoLoad();
+                if (!DoLoad())
+                {
+                    return;
+                }
             }
-            generator.GenerateCurve(tbGamma.Value / 10.0);
             
             var exporter = new GCodeExporter(
                 Int32.Parse(txtWidth.Text), 
@@ -67,11 +69,22 @@ namespace Png2Hilbert.Gui
             this.isLoaded = true;
         }
 
-        private void DoLoad()
+        private bool DoLoad()
         {
             SaveSettings();
-            generator.LoadImage(txtInput.Text);
-            this.isLoaded = true;
+            try
+            {
+                generator.LoadImage(txtInput.Text);
+                generator.PrepareCurve(tbOrder.Value);
+                generator.GenerateCurve(this.tbGamma.Value/10.0, tbOrder.Value);
+                this.isLoaded = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message);
+                return false;
+            }
+            return true;
         }
 
         private void FrmMain_Load(object sender, EventArgs e)
@@ -84,8 +97,13 @@ namespace Png2Hilbert.Gui
             this.txtInput.Text = Properties.Settings.Default.InputFileName;
             this.txtOutput.Text = Properties.Settings.Default.OutputFileName;
             this.tbGamma.Value = Properties.Settings.Default.Gamma;
+            this.tbOrder.Value = Properties.Settings.Default.MaxOrder;
             this.txtWidth.Text = Properties.Settings.Default.PlotWidth.ToString();
             this.txtHeight.Text = Properties.Settings.Default.PlotHeight.ToString();
+            this.txtHeader.Text = Properties.Settings.Default.Header;
+            this.txtFooter.Text = Properties.Settings.Default.Footer;
+            this.txtPenUp.Text = Properties.Settings.Default.PenUp;
+            this.txtPenDown.Text = Properties.Settings.Default.PenDown;
         }
 
         private void SaveSettings()
@@ -93,8 +111,13 @@ namespace Png2Hilbert.Gui
             Properties.Settings.Default.InputFileName = this.txtInput.Text;
             Properties.Settings.Default.OutputFileName = this.txtOutput.Text;
             Properties.Settings.Default.Gamma = this.tbGamma.Value;
-            Properties.Settings.Default.PlotWidth = txtWidth.Text.ToIntDef(250);
-            Properties.Settings.Default.PlotHeight = txtHeight.Text.ToIntDef(250);
+            Properties.Settings.Default.MaxOrder = this.tbOrder.Value;
+            Properties.Settings.Default.PlotWidth = this.txtWidth.Text.ToIntDef(250);
+            Properties.Settings.Default.PlotHeight = this.txtHeight.Text.ToIntDef(180);
+            Properties.Settings.Default.Header = this.txtHeader.Text;
+            Properties.Settings.Default.Footer = this.txtFooter.Text;
+            Properties.Settings.Default.PenUp = this.txtPenUp.Text;
+            Properties.Settings.Default.PenDown = this.txtPenDown.Text;
             Properties.Settings.Default.Save();
         }
 
@@ -103,6 +126,30 @@ namespace Png2Hilbert.Gui
             if (fileInput.ShowDialog(this) == DialogResult.OK)
             {
                 this.txtInput.Text = fileInput.FileName;
+                SaveSettings();
+            }
+        }
+
+        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveSettings();
+        }
+
+        private void tbGamma_ValueChanged(object sender, EventArgs e)
+        {
+            if (isLoaded)
+            {
+                generator.GenerateCurve(tbGamma.Value / 10.0, tbOrder.Value);
+                SaveSettings();
+            }
+        }
+
+        private void tbOrder_ValueChanged(object sender, EventArgs e)
+        {
+            if (isLoaded)
+            {
+                generator.PrepareCurve(tbOrder.Value);
+                generator.GenerateCurve(this.tbGamma.Value/10.0, tbOrder.Value);
                 SaveSettings();
             }
         }

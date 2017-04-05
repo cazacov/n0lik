@@ -17,5 +17,24 @@
     <Setting Name="PlotHeight" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">200</Value>
     </Setting>
+    <Setting Name="MaxOrder" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">8</Value>
+    </Setting>
+    <Setting Name="Header" Type="System.String" Scope="User">
+      <Value Profile="(Default)">G21
+
+M3 S120
+
+G0 X100 Y100 F4000</Value>
+    </Setting>
+    <Setting Name="Footer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">M3 S120</Value>
+    </Setting>
+    <Setting Name="PenUp" Type="System.String" Scope="User">
+      <Value Profile="(Default)">M3 S120</Value>
+    </Setting>
+    <Setting Name="PenDown" Type="System.String" Scope="User">
+      <Value Profile="(Default)">M3 S0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

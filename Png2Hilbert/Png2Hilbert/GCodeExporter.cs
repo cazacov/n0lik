@@ -66,19 +66,42 @@ namespace Png2Hilbert
             {
                 textWriter.WriteLine(this.Header);
 
-                bool isFirst = true;
+                Point lastPoint;
 
-                foreach (var point in path)
+                if (path.Count > 1)
                 {
-                    if (isFirst)
-                    {
-                        textWriter.WriteLine("G0 X{0} Y{1}", point.X * scale + offsetX, pageHeightMm - point.Y * scale - offsetY);
-                        textWriter.WriteLine(this.PenDown);
-                        isFirst = false;
-                    }
+                    textWriter.WriteLine("G0 X{0} Y{1}", path[0].X * scale + offsetX,
+                    pageHeightMm - path[0].Y * scale - offsetY);
+                    textWriter.WriteLine(this.PenDown);
 
-                    textWriter.WriteLine("G1 X{0:0.00} Y{1:0.00}", point.X * scale + offsetX, pageHeightMm - point.Y * scale - offsetY);
+                    lastPoint = path[0];
+
+                    for (int i = 1; i < path.Count; i++)
+                    {
+                        var point = path[i];
+                        if (i < path.Count - 1)
+                        {
+                            var nextPoint = path[i + 1];
+
+                            if (lastPoint.X == point.X && nextPoint.X == point.X)
+                            {
+                                // 3 points on the same line, skip the middle one
+                                continue;
+                            }
+                            if (lastPoint.Y == point.Y && nextPoint.Y == point.Y)
+                            {
+                                // 3 points on the same line, skip the middle one
+                                continue;
+                            }
+                        }
+
+                        textWriter.WriteLine("G1 X{0:0.00} Y{1:0.00}", point.X * scale + offsetX,
+                            pageHeightMm - point.Y * scale - offsetY);
+
+                        lastPoint = point;
+                    }
                 }
+
                 textWriter.WriteLine(this.PenUp);
 
                 textWriter.WriteLine(this.Footer);

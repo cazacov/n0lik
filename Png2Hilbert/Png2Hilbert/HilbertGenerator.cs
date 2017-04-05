@@ -26,9 +26,13 @@ namespace Png2Hilbert
             {
                 this.bitmap = new Bitmap(bmp);
             }
-            this.Curve = new HilbertCurve(Direction.Up, 8, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
-            CalculateBrightness(this.bitmap, this.Curve, new Rectangle(0, 0, this.bitmap.Width, this.bitmap.Height));
             OnLoad?.Invoke(this, this.bitmap);
+        }
+
+        public void PrepareCurve(int maxOrder)
+        {
+            this.Curve = new HilbertCurve(Direction.Up, maxOrder, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+            CalculateBrightness(this.bitmap, this.Curve, new Rectangle(0, 0, this.bitmap.Width, this.bitmap.Height));
         }
 
         public void Dispose()
@@ -37,15 +41,17 @@ namespace Png2Hilbert
             bitmap = null;
         }
 
-        public void GenerateCurve(double gamma)
+        public void GenerateCurve(double gamma, int maxOrder)
         {
             this.Path = new List<Point>();
-            TracePath(this.Curve, this.Path, gamma);
-            GeneratePreview(this.bitmap, Path);
-            OnPathGenerated?.Invoke(this, bitmap);
+
+            int zeroLevel = Math.Max(bitmap.Width >> (maxOrder + 1), 1);
+
+            TracePath(this.Curve, this.Path, gamma, zeroLevel);
+            GeneratePreview(this.Path, this.bitmap.Width, this.bitmap.Height);
         }
 
-        private void TracePath(HilbertCurve curve, List<Point> points, double gamma)
+        private void TracePath(HilbertCurve curve, List<Point> points, double gamma, int zeroLevel)
         {
             if (!curve.Children.Any())
             {
@@ -55,7 +61,7 @@ namespace Png2Hilbert
 
             curve.Children.ForEach(childCurve =>
                 {
-                    if (BlockIsWhite(childCurve, gamma))
+                    if (BlockIsWhite(childCurve, gamma, zeroLevel))
                     {
                         points.Add(childCurve.EnterPoint);
                         if (childCurve.ExitPoint != childCurve.EnterPoint)
@@ -65,47 +71,30 @@ namespace Png2Hilbert
                     }
                     else
                     {
-                        TracePath(childCurve, points, gamma);            
+                        TracePath(childCurve, points, gamma, zeroLevel);            
                     }
                 }
             );
         }
 
-        private bool BlockIsWhite(HilbertCurve c, double gamma)
+        private bool BlockIsWhite(HilbertCurve c, double gamma, int zeroLevel)
         {
-            var threshold = 1.0 / (1 << c.Order);
+            var threshold = 1.0 / (zeroLevel << c.Order);
             var result = Math.Pow(c.Blackness, 1.0 / gamma) < threshold;
             return result;
         }
 
-        //bool BlockIsWhite(Rectangle rect, int order)
-        //{
-        //    const double gamma = 0.85;
-
-        //    long intensity = 0;
-        //    for (var y = rect.Top; y < rect.Bottom; y++)
-        //    {
-        //        for (var x = rect.Left; x < rect.Right; x++)
-        //        {
-        //            intensity += bitmap.GetPixel(x, y).G; // use green component
-        //        }
-        //    }
-        //    intensity /= rect.Width * rect.Height;
-
-        //    var threshold = 1.0 / (1 << order);
-
-        //    var result =  Math.Pow(1 - intensity / 255.0, 1.0 / gamma) < threshold;
-        //    return result;
-        //}
-
-        private void GeneratePreview(Bitmap bmp, List<Point> path)
+        private void GeneratePreview(List<Point> path, int width, int height)
         {
-            using (var graphics = Graphics.FromImage(bmp))
+            using (var bmp = new Bitmap(width, height))
             {
-                graphics.FillRectangle(Brushes.White, 0,0, bmp.Width, bmp.Height);
-
-                var pen = Pens.Black;
-                graphics.DrawLines(pen, path.ToArray());
+                using (var grp = Graphics.FromImage(bmp))
+                {
+                    grp.FillRectangle(Brushes.White, 0, 0, bmp.Width, bmp.Height);
+                    var pen = Pens.Black;
+                    grp.DrawLines(pen, path.ToArray());
+                    OnPathGenerated?.Invoke(this, bmp);
+                }
             }
         }
 

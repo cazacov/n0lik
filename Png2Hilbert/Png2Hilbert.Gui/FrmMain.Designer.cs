@@ -50,12 +50,15 @@
             this.txtPenUp = new System.Windows.Forms.TextBox();
             this.lblPenDown = new System.Windows.Forms.Label();
             this.txtPenDown = new System.Windows.Forms.TextBox();
-            this.tbGamma = new System.Windows.Forms.TrackBar();
             this.lblGamma = new System.Windows.Forms.Label();
             this.btnLoad = new System.Windows.Forms.Button();
+            this.tbGamma = new System.Windows.Forms.TrackBar();
+            this.tbOrder = new System.Windows.Forms.TrackBar();
+            this.lblOrder = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picPreview)).BeginInit();
             this.grpSize.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbGamma)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbOrder)).BeginInit();
             this.SuspendLayout();
             // 
             // fileInput
@@ -192,9 +195,9 @@
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(632, 9);
+            this.btnStart.Location = new System.Drawing.Point(540, 36);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(158, 48);
+            this.btnStart.Size = new System.Drawing.Size(248, 21);
             this.btnStart.TabIndex = 11;
             this.btnStart.Text = "Export to G-code!";
             this.btnStart.UseVisualStyleBackColor = true;
@@ -255,20 +258,6 @@
             this.txtPenDown.TabIndex = 17;
             this.txtPenDown.Text = "M3 S0";
             // 
-            // tbGamma
-            // 
-            this.tbGamma.AutoSize = false;
-            this.tbGamma.Cursor = System.Windows.Forms.Cursors.WaitCursor;
-            this.tbGamma.Location = new System.Drawing.Point(118, 63);
-            this.tbGamma.Maximum = 25;
-            this.tbGamma.Minimum = 5;
-            this.tbGamma.Name = "tbGamma";
-            this.tbGamma.Size = new System.Drawing.Size(406, 35);
-            this.tbGamma.TabIndex = 19;
-            this.tbGamma.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-            this.tbGamma.UseWaitCursor = true;
-            this.tbGamma.Value = 10;
-            // 
             // lblGamma
             // 
             this.lblGamma.AutoSize = true;
@@ -282,20 +271,56 @@
             // 
             this.btnLoad.Location = new System.Drawing.Point(540, 9);
             this.btnLoad.Name = "btnLoad";
-            this.btnLoad.Size = new System.Drawing.Size(82, 48);
+            this.btnLoad.Size = new System.Drawing.Size(248, 21);
             this.btnLoad.TabIndex = 21;
             this.btnLoad.Text = "Load";
             this.btnLoad.UseVisualStyleBackColor = true;
             this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
+            // 
+            // tbGamma
+            // 
+            this.tbGamma.LargeChange = 2;
+            this.tbGamma.Location = new System.Drawing.Point(118, 64);
+            this.tbGamma.Maximum = 25;
+            this.tbGamma.Minimum = 5;
+            this.tbGamma.Name = "tbGamma";
+            this.tbGamma.Size = new System.Drawing.Size(406, 45);
+            this.tbGamma.TabIndex = 22;
+            this.tbGamma.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+            this.tbGamma.Value = 10;
+            this.tbGamma.ValueChanged += new System.EventHandler(this.tbGamma_ValueChanged);
+            // 
+            // tbOrder
+            // 
+            this.tbOrder.LargeChange = 2;
+            this.tbOrder.Location = new System.Drawing.Point(621, 63);
+            this.tbOrder.Maximum = 9;
+            this.tbOrder.Minimum = 1;
+            this.tbOrder.Name = "tbOrder";
+            this.tbOrder.Size = new System.Drawing.Size(167, 45);
+            this.tbOrder.TabIndex = 23;
+            this.tbOrder.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+            this.tbOrder.Value = 8;
+            this.tbOrder.ValueChanged += new System.EventHandler(this.tbOrder_ValueChanged);
+            // 
+            // lblOrder
+            // 
+            this.lblOrder.AutoSize = true;
+            this.lblOrder.Location = new System.Drawing.Point(544, 73);
+            this.lblOrder.Name = "lblOrder";
+            this.lblOrder.Size = new System.Drawing.Size(33, 13);
+            this.lblOrder.TabIndex = 24;
+            this.lblOrder.Text = "Order";
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(806, 630);
+            this.Controls.Add(this.lblOrder);
+            this.Controls.Add(this.tbOrder);
             this.Controls.Add(this.btnLoad);
             this.Controls.Add(this.lblGamma);
-            this.Controls.Add(this.tbGamma);
             this.Controls.Add(this.lblPenDown);
             this.Controls.Add(this.txtPenDown);
             this.Controls.Add(this.lblPenUp);
@@ -313,13 +338,16 @@
             this.Controls.Add(this.picPreview);
             this.Controls.Add(this.lblInput);
             this.Controls.Add(this.txtInput);
+            this.Controls.Add(this.tbGamma);
             this.Name = "FrmMain";
             this.Text = "PNG to Hilbert curve converter";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.Load += new System.EventHandler(this.FrmMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picPreview)).EndInit();
             this.grpSize.ResumeLayout(false);
             this.grpSize.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbGamma)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbOrder)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -349,9 +377,11 @@
         private System.Windows.Forms.TextBox txtPenUp;
         private System.Windows.Forms.Label lblPenDown;
         private System.Windows.Forms.TextBox txtPenDown;
-        private System.Windows.Forms.TrackBar tbGamma;
         private System.Windows.Forms.Label lblGamma;
         private System.Windows.Forms.Button btnLoad;
+        private System.Windows.Forms.TrackBar tbGamma;
+        private System.Windows.Forms.TrackBar tbOrder;
+        private System.Windows.Forms.Label lblOrder;
     }
 }
 

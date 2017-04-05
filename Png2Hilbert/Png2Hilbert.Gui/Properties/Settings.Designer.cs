@@ -82,5 +82,65 @@ namespace Png2Hilbert.Gui.Properties {
                 this["PlotHeight"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        public int MaxOrder {
+            get {
+                return ((int)(this["MaxOrder"]));
+            }
+            set {
+                this["MaxOrder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("G21\r\n\r\nM3 S120\r\n\r\nG0 X100 Y100 F4000")]
+        public string Header {
+            get {
+                return ((string)(this["Header"]));
+            }
+            set {
+                this["Header"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("M3 S120")]
+        public string Footer {
+            get {
+                return ((string)(this["Footer"]));
+            }
+            set {
+                this["Footer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("M3 S120")]
+        public string PenUp {
+            get {
+                return ((string)(this["PenUp"]));
+            }
+            set {
+                this["PenUp"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("M3 S0")]
+        public string PenDown {
+            get {
+                return ((string)(this["PenDown"]));
+            }
+            set {
+                this["PenDown"] = value;
+            }
+        }
     }
 }
