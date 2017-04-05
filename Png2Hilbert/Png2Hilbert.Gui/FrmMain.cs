@@ -76,15 +76,25 @@ namespace Png2Hilbert.Gui
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
+            LoadSettings();
+        }
+
+        private void LoadSettings()
+        {
             this.txtInput.Text = Properties.Settings.Default.InputFileName;
             this.txtOutput.Text = Properties.Settings.Default.OutputFileName;
+            this.tbGamma.Value = Properties.Settings.Default.Gamma;
+            this.txtWidth.Text = Properties.Settings.Default.PlotWidth.ToString();
+            this.txtHeight.Text = Properties.Settings.Default.PlotHeight.ToString();
         }
 
         private void SaveSettings()
         {
             Properties.Settings.Default.InputFileName = this.txtInput.Text;
-            Properties.Settings.Default.InputFileName = this.txtOutput.Text;
-
+            Properties.Settings.Default.OutputFileName = this.txtOutput.Text;
+            Properties.Settings.Default.Gamma = this.tbGamma.Value;
+            Properties.Settings.Default.PlotWidth = txtWidth.Text.ToIntDef(250);
+            Properties.Settings.Default.PlotHeight = txtHeight.Text.ToIntDef(250);
             Properties.Settings.Default.Save();
         }
 
@@ -93,8 +103,7 @@ namespace Png2Hilbert.Gui
             if (fileInput.ShowDialog(this) == DialogResult.OK)
             {
                 this.txtInput.Text = fileInput.FileName;
-                Properties.Settings.Default.InputFileName = this.txtInput.Text;
-                Properties.Settings.Default.Save();
+                SaveSettings();
             }
         }
     }

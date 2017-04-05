@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Remoting.Messaging;
-using System.Threading;
 
 namespace Png2Hilbert
 {
@@ -18,31 +12,40 @@ namespace Png2Hilbert
 
         private Bitmap bitmap;
         public List<Point> Path { get; private set; }
-
-        private const int minOrder = 7;
+        public HilbertCurve Curve { get; private set; }
 
         public void LoadImage(string fileName)
         {
-            this.bitmap = (Bitmap)Image.FromFile(fileName, true);
+            if (this.bitmap != null)
+            {
+                this.bitmap.Dispose();
+                this.bitmap = null;
+            }
+
+            using (var bmp = Image.FromFile(fileName, true))
+            {
+                this.bitmap = new Bitmap(bmp);
+            }
+            this.Curve = new HilbertCurve(Direction.Up, 8, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+            CalculateBrightness(this.bitmap, this.Curve, new Rectangle(0, 0, this.bitmap.Width, this.bitmap.Height));
             OnLoad?.Invoke(this, this.bitmap);
         }
 
         public void Dispose()
         {
             bitmap?.Dispose();
+            bitmap = null;
         }
 
-        public void GenerateCurve(double d)
+        public void GenerateCurve(double gamma)
         {
-            this.Curve = new HilbertCurve(Direction.Up, 8, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
-
             this.Path = new List<Point>();
-            TracePath(this.Curve, this.Path);
+            TracePath(this.Curve, this.Path, gamma);
             GeneratePreview(this.bitmap, Path);
             OnPathGenerated?.Invoke(this, bitmap);
         }
 
-        private void TracePath(HilbertCurve curve, List<Point> points)
+        private void TracePath(HilbertCurve curve, List<Point> points, double gamma)
         {
             if (!curve.Children.Any())
             {
@@ -50,48 +53,50 @@ namespace Png2Hilbert
                 return;
             }
 
-            curve.Children.ForEach(c =>
+            curve.Children.ForEach(childCurve =>
                 {
-                    if (BlockIsWhite(c.Square, c.Order))
+                    if (BlockIsWhite(childCurve, gamma))
                     {
-                        points.Add(c.EnterPoint);
-                        if (c.ExitPoint != c.EnterPoint)
+                        points.Add(childCurve.EnterPoint);
+                        if (childCurve.ExitPoint != childCurve.EnterPoint)
                         {
-                            points.Add(c.ExitPoint);
+                            points.Add(childCurve.ExitPoint);
                         }
                     }
                     else
                     {
-                        TracePath(c, points);            
+                        TracePath(childCurve, points, gamma);            
                     }
                 }
             );
-
-            //var nonWhiteChildren = curve.Children.Where(c => !BlockIsWhite(c.Square, c.Order)).ToList();
-            //nonWhiteChildren.ForEach(c => TracePath(c, points));
         }
 
-        public HilbertCurve Curve { get; set; }
-
-        bool BlockIsWhite(Rectangle rect, int order)
+        private bool BlockIsWhite(HilbertCurve c, double gamma)
         {
-            const double gamma = 0.85;
-
-            long intensity = 0;
-            for (var y = rect.Top; y < rect.Bottom; y++)
-            {
-                for (var x = rect.Left; x < rect.Right; x++)
-                {
-                    intensity += bitmap.GetPixel(x, y).G; // use green component
-                }
-            }
-            intensity /= rect.Width * rect.Height;
-
-            var threshold = 1.0 / (1 << order);
-
-            var result =  Math.Pow(1 - intensity / 255.0, 1.0 / gamma) < threshold;
+            var threshold = 1.0 / (1 << c.Order);
+            var result = Math.Pow(c.Blackness, 1.0 / gamma) < threshold;
             return result;
         }
+
+        //bool BlockIsWhite(Rectangle rect, int order)
+        //{
+        //    const double gamma = 0.85;
+
+        //    long intensity = 0;
+        //    for (var y = rect.Top; y < rect.Bottom; y++)
+        //    {
+        //        for (var x = rect.Left; x < rect.Right; x++)
+        //        {
+        //            intensity += bitmap.GetPixel(x, y).G; // use green component
+        //        }
+        //    }
+        //    intensity /= rect.Width * rect.Height;
+
+        //    var threshold = 1.0 / (1 << order);
+
+        //    var result =  Math.Pow(1 - intensity / 255.0, 1.0 / gamma) < threshold;
+        //    return result;
+        //}
 
         private void GeneratePreview(Bitmap bmp, List<Point> path)
         {
@@ -104,6 +109,31 @@ namespace Png2Hilbert
             }
         }
 
-        
+        private void CalculateBrightness(Bitmap bmp, HilbertCurve curve, Rectangle rect)
+        {
+            if (!curve.Children.Any())
+            {
+                long intensity = 0;
+                for (var y = rect.Top; y < rect.Bottom; y++)
+                {
+                    for (var x = rect.Left; x < rect.Right; x++)
+                    {
+                        intensity += bmp.GetPixel(x, y).G; // use green component
+                    }
+                }
+                curve.Blackness = 1.0 - intensity / (rect.Width * rect.Height * 255.0);
+                return;
+            }
+            else
+            {
+                var b = 0.0;
+                foreach (var child in curve.Children)
+                {
+                    CalculateBrightness(bmp, child, child.Square);
+                    b += child.Blackness;
+                }
+                curve.Blackness = b / curve.Children.Count();
+            }
+        }
     }
 }

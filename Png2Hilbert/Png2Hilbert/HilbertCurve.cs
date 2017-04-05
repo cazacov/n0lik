@@ -14,7 +14,7 @@ namespace Png2Hilbert
             this.Square = square;
             this.Order = order;
             this.Children = new List<HilbertCurve>();
-
+            this.Blackness = 0;
 
             if (order == 0)
             {
@@ -65,5 +65,6 @@ namespace Png2Hilbert
         public Direction Direction { get; set; }
         public Point EnterPoint { get; private set; }
         public Point ExitPoint { get; private set; }
+        public double Blackness { get; set; }
     }
 }

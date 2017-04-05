@@ -46,5 +46,41 @@ namespace Png2Hilbert.Gui.Properties {
                 this["OutputFileName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int Gamma {
+            get {
+                return ((int)(this["Gamma"]));
+            }
+            set {
+                this["Gamma"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("250")]
+        public int PlotWidth {
+            get {
+                return ((int)(this["PlotWidth"]));
+            }
+            set {
+                this["PlotWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("200")]
+        public int PlotHeight {
+            get {
+                return ((int)(this["PlotHeight"]));
+            }
+            set {
+                this["PlotHeight"] = value;
+            }
+        }
     }
 }

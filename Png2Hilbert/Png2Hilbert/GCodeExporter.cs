@@ -45,7 +45,7 @@ namespace Png2Hilbert
             }
         }
 
-        public void ExportGCode(IEnumerable<Point> path, string outputFileName)
+        public void ExportGCode(IList<Point> path, string outputFileName)
         {
             var maxX = path.Max(p => p.X);
             var minX = path.Min(p => p.X);
