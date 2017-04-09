@@ -10,45 +10,45 @@ namespace Png2Hilbert
         public EventHandler<Bitmap> OnLoad;
         public EventHandler<Bitmap> OnPathGenerated;
 
-        private Bitmap bitmap;
+        private Bitmap sourceImage;
         public List<Point> Path { get; private set; }
         public HilbertCurve Curve { get; private set; }
 
         public void LoadImage(string fileName)
         {
-            if (this.bitmap != null)
+            if (this.sourceImage != null)
             {
-                this.bitmap.Dispose();
-                this.bitmap = null;
+                this.sourceImage.Dispose();
+                this.sourceImage = null;
             }
 
             using (var bmp = Image.FromFile(fileName, true))
             {
-                this.bitmap = new Bitmap(bmp);
+                this.sourceImage = new Bitmap(bmp);
             }
-            OnLoad?.Invoke(this, this.bitmap);
+            OnLoad?.Invoke(this, this.sourceImage);
         }
 
         public void PrepareCurve(int maxOrder)
         {
-            this.Curve = new HilbertCurve(Direction.Up, maxOrder, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
-            CalculateBrightness(this.bitmap, this.Curve, new Rectangle(0, 0, this.bitmap.Width, this.bitmap.Height));
+            this.Curve = new HilbertCurve(Direction.Up, maxOrder, new Rectangle(0, 0, sourceImage.Width, sourceImage.Height));
+            CalculateBrightness(this.sourceImage, this.Curve, new Rectangle(0, 0, this.sourceImage.Width, this.sourceImage.Height));
         }
 
         public void Dispose()
         {
-            bitmap?.Dispose();
-            bitmap = null;
+            sourceImage?.Dispose();
+            sourceImage = null;
         }
 
         public void GenerateCurve(double gamma, int maxOrder)
         {
+            var zeroLevel = Math.Max(sourceImage.Width >> (maxOrder + 1), 1);
+
             this.Path = new List<Point>();
-
-            int zeroLevel = Math.Max(bitmap.Width >> (maxOrder + 1), 1);
-
             TracePath(this.Curve, this.Path, gamma, zeroLevel);
-            GeneratePreview(this.Path, this.bitmap.Width, this.bitmap.Height);
+
+            GeneratePreview(this.Path, this.sourceImage.Width, this.sourceImage.Height);
         }
 
         private void TracePath(HilbertCurve curve, List<Point> points, double gamma, int zeroLevel)
@@ -59,22 +59,23 @@ namespace Png2Hilbert
                 return;
             }
 
-            curve.Children.ForEach(childCurve =>
+            foreach (var child in curve.Children)
+            {
+                if (BlockIsWhite(child, gamma, zeroLevel))
                 {
-                    if (BlockIsWhite(childCurve, gamma, zeroLevel))
+                    // add enter and exit points and do not go deeper
+                    points.Add(child.EnterPoint);
+                    if (child.ExitPoint != child.EnterPoint)
                     {
-                        points.Add(childCurve.EnterPoint);
-                        if (childCurve.ExitPoint != childCurve.EnterPoint)
-                        {
-                            points.Add(childCurve.ExitPoint);
-                        }
-                    }
-                    else
-                    {
-                        TracePath(childCurve, points, gamma, zeroLevel);            
+                        points.Add(child.ExitPoint);
                     }
                 }
-            );
+                else
+                {
+                    // recursive call
+                    TracePath(child, points, gamma, zeroLevel);            
+                }
+            }
         }
 
         private bool BlockIsWhite(HilbertCurve c, double gamma, int zeroLevel)

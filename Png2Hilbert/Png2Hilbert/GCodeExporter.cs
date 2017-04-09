@@ -20,6 +20,7 @@ namespace Png2Hilbert
 
         public GCodeExporter(int pageWidthMm, int pageHeightMm, string header = "", string footer = "", string penUp = "", string penDown = "")
         {
+            // Some reasonable defaults
             Header = "G21\nM3 S100\nG0 F5000\n";
             Footer = "M3 S120\n";
             PenUp = "M3 S120\n";
@@ -66,16 +67,15 @@ namespace Png2Hilbert
             {
                 textWriter.WriteLine(this.Header);
 
-                Point lastPoint;
-
-                if (path.Count > 1)
+                if (path.Any())
                 {
-                    textWriter.WriteLine("G0 X{0} Y{1}", path[0].X * scale + offsetX,
-                    pageHeightMm - path[0].Y * scale - offsetY);
+                    textWriter.WriteLine("G0 X{0:0.00} Y{1:0.00}", 
+                        path[0].X * scale + offsetX,
+                        pageHeightMm - path[0].Y * scale - offsetY);
+
                     textWriter.WriteLine(this.PenDown);
 
-                    lastPoint = path[0];
-
+                    var lastPoint = path[0];
                     for (int i = 1; i < path.Count; i++)
                     {
                         var point = path[i];
@@ -85,12 +85,12 @@ namespace Png2Hilbert
 
                             if (lastPoint.X == point.X && nextPoint.X == point.X)
                             {
-                                // 3 points on the same line, skip the middle one
+                                // 3 points on the same vertical line, skip the middle one
                                 continue;
                             }
                             if (lastPoint.Y == point.Y && nextPoint.Y == point.Y)
                             {
-                                // 3 points on the same line, skip the middle one
+                                // 3 points on the same horizontal line, skip the middle one
                                 continue;
                             }
                         }
@@ -103,7 +103,6 @@ namespace Png2Hilbert
                 }
 
                 textWriter.WriteLine(this.PenUp);
-
                 textWriter.WriteLine(this.Footer);
             }
         }
