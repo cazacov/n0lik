@@ -46,7 +46,7 @@ namespace Png2Hilbert
             }
         }
 
-        public void ExportGCode(IList<Point> path, string outputFileName)
+        public double ExportGCode(IList<Point> path, string outputFileName)
         {
             var maxX = path.Max(p => p.X);
             var minX = path.Min(p => p.X);
@@ -62,6 +62,8 @@ namespace Png2Hilbert
 
             var locale = CultureInfo.InvariantCulture;
             Thread.CurrentThread.CurrentCulture = locale;
+
+            var pathLengthMm = 0;
 
             using (var textWriter = File.CreateText(outputFileName))
             {
@@ -79,6 +81,9 @@ namespace Png2Hilbert
                     for (int i = 1; i < path.Count; i++)
                     {
                         var point = path[i];
+
+                        pathLengthMm += Math.Abs(point.X - lastPoint.X) + Math.Abs(point.Y - lastPoint.Y);
+
                         if (i < path.Count - 1)
                         {
                             var nextPoint = path[i + 1];
@@ -105,6 +110,7 @@ namespace Png2Hilbert
                 textWriter.WriteLine(this.PenUp);
                 textWriter.WriteLine(this.Footer);
             }
+            return pathLengthMm * scale;
         }
     }
 }

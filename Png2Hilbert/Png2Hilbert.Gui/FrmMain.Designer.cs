@@ -55,10 +55,16 @@
             this.tbGamma = new System.Windows.Forms.TrackBar();
             this.tbOrder = new System.Windows.Forms.TrackBar();
             this.lblOrder = new System.Windows.Forms.Label();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lblStatus1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblCalculationTime = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblStatus2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblPathLength = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.picPreview)).BeginInit();
             this.grpSize.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbGamma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbOrder)).BeginInit();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // fileInput
@@ -312,11 +318,50 @@
             this.lblOrder.TabIndex = 24;
             this.lblOrder.Text = "Order";
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.lblStatus1,
+            this.lblCalculationTime,
+            this.lblStatus2,
+            this.lblPathLength});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 637);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(806, 22);
+            this.statusStrip1.TabIndex = 25;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // lblStatus1
+            // 
+            this.lblStatus1.Name = "lblStatus1";
+            this.lblStatus1.Size = new System.Drawing.Size(94, 17);
+            this.lblStatus1.Text = "Calculation time";
+            // 
+            // lblCalculationTime
+            // 
+            this.lblCalculationTime.Name = "lblCalculationTime";
+            this.lblCalculationTime.Size = new System.Drawing.Size(32, 17);
+            this.lblCalculationTime.Text = "0 ms";
+            // 
+            // lblStatus2
+            // 
+            this.lblStatus2.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
+            this.lblStatus2.Name = "lblStatus2";
+            this.lblStatus2.Size = new System.Drawing.Size(101, 17);
+            this.lblStatus2.Text = "Path length (mm)";
+            // 
+            // lblPathLength
+            // 
+            this.lblPathLength.Name = "lblPathLength";
+            this.lblPathLength.Size = new System.Drawing.Size(13, 17);
+            this.lblPathLength.Text = "0";
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(806, 630);
+            this.ClientSize = new System.Drawing.Size(806, 659);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.lblOrder);
             this.Controls.Add(this.tbOrder);
             this.Controls.Add(this.btnLoad);
@@ -348,6 +393,8 @@
             this.grpSize.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbGamma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbOrder)).EndInit();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -382,6 +429,11 @@
         private System.Windows.Forms.TrackBar tbGamma;
         private System.Windows.Forms.TrackBar tbOrder;
         private System.Windows.Forms.Label lblOrder;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel lblStatus1;
+        private System.Windows.Forms.ToolStripStatusLabel lblCalculationTime;
+        private System.Windows.Forms.ToolStripStatusLabel lblStatus2;
+        private System.Windows.Forms.ToolStripStatusLabel lblPathLength;
     }
 }
 

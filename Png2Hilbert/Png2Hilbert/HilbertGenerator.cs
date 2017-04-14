@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
@@ -14,6 +15,8 @@ namespace Png2Hilbert
         public List<Point> Path { get; private set; }
         public HilbertCurve Curve { get; private set; }
 
+        private Stopwatch stopwatch = new Stopwatch();
+
         public void LoadImage(string fileName)
         {
             if (this.sourceImage != null)
@@ -26,13 +29,28 @@ namespace Png2Hilbert
             {
                 this.sourceImage = new Bitmap(bmp);
             }
+
             OnLoad?.Invoke(this, this.sourceImage);
         }
 
+        public long LastCalculationTimeInMs => stopwatch.ElapsedMilliseconds;
+
         public void PrepareCurve(int maxOrder)
         {
+            ResetTimer();
             this.Curve = new HilbertCurve(Direction.Up, maxOrder, new Rectangle(0, 0, sourceImage.Width, sourceImage.Height));
             CalculateBrightness(this.sourceImage, this.Curve, new Rectangle(0, 0, this.sourceImage.Width, this.sourceImage.Height));
+            stopwatch.Stop();
+        }
+
+        private void ResetTimer()
+        {
+            if (stopwatch.IsRunning)
+            {
+                stopwatch.Stop();
+            }
+            stopwatch.Reset();
+            stopwatch.Start();
         }
 
         public void Dispose()
@@ -43,11 +61,12 @@ namespace Png2Hilbert
 
         public void GenerateCurve(double gamma, int maxOrder)
         {
+            ResetTimer();
+
             var zeroLevel = Math.Max(sourceImage.Width >> (maxOrder + 1), 1);
 
             this.Path = new List<Point>();
             TracePath(this.Curve, this.Path, gamma, zeroLevel);
-
             GeneratePreview(this.Path, this.sourceImage.Width, this.sourceImage.Height);
         }
 
@@ -94,6 +113,7 @@ namespace Png2Hilbert
                     grp.FillRectangle(Brushes.White, 0, 0, bmp.Width, bmp.Height);
                     var pen = Pens.Black;
                     grp.DrawLines(pen, path.ToArray());
+                    stopwatch.Stop();
                     OnPathGenerated?.Invoke(this, bmp);
                 }
             }

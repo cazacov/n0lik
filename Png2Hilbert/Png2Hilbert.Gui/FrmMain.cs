@@ -38,7 +38,9 @@ namespace Png2Hilbert.Gui
                 txtPenUp.Text,
                 txtPenDown.Text);
 
-            exporter.ExportGCode(generator.Path, txtOutput.Text);
+            var pathLengthMm = exporter.ExportGCode(generator.Path, txtOutput.Text);
+
+            lblPathLength.Text = $@"{pathLengthMm:n}";
         }
 
         private void OnPathGenerated(object sender, Bitmap bitmap)
@@ -49,6 +51,8 @@ namespace Png2Hilbert.Gui
             this.picPreview.Image = bitmapCopy;
             this.picPreview.Invalidate();
             this.picPreview.Refresh();
+            this.lblCalculationTime.Text = $@"{generator.LastCalculationTimeInMs} ms";
+
             Application.DoEvents();
         }
 
