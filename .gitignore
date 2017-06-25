@@ -35,5 +35,5 @@
 #IDEA/PyCharm
 .idea
 
-# G-Code samples
-*.g
+# Sample drawings
+drawings
